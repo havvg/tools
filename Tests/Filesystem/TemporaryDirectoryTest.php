@@ -5,7 +5,7 @@ namespace Havvg\Tools\Tests\Filesystem;
 use Havvg\Tools\Filesystem\TemporaryDirectory;
 
 /**
- * @covers Havvg\Tools\Filesystem\TemporaryDirectory
+ * @covers \Havvg\Tools\Filesystem\TemporaryDirectory
  */
 class TemporaryDirectoryTest extends \PHPUnit_Framework_TestCase
 {
@@ -35,5 +35,16 @@ class TemporaryDirectoryTest extends \PHPUnit_Framework_TestCase
         $directory = (string) (new TemporaryDirectory('test'));
 
         static::assertFalse(is_dir($directory));
+    }
+
+    /**
+     * @depends testDirectoryIsCreated
+     */
+    public function testRootingIntoCustomDirectory()
+    {
+        $rootDirectory = new TemporaryDirectory('test_root');
+        $directory = new TemporaryDirectory('test', (string) $rootDirectory);
+
+        static::assertStringStartsWith((string) $rootDirectory, (string) $directory, 'The directory has been created in the custom directory.');
     }
 }

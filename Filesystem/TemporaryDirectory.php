@@ -16,11 +16,16 @@ final class TemporaryDirectory
      *
      * Generates, creates and references a temporary directory.
      *
-     * @param string $prefix
+     * @param string      $prefix
+     * @param string|null $rootPath The basepath to root the temporary directory into. Defaults to the system temp directory.
      */
-    public function __construct($prefix)
+    public function __construct($prefix, $rootPath = null)
     {
-        $this->directory = sys_get_temp_dir().DIRECTORY_SEPARATOR.uniqid($prefix);
+        if (null === $rootPath) {
+            $rootPath = sys_get_temp_dir();
+        }
+
+        $this->directory = $rootPath.DIRECTORY_SEPARATOR.uniqid($prefix);
 
         $fs = new Filesystem();
         $fs->mkdir($this->directory);
@@ -29,7 +34,7 @@ final class TemporaryDirectory
     /**
      * Destructor.
      *
-     * Removes the directory temporary directory.
+     * Removes the temporary directory.
      */
     public function __destruct()
     {
